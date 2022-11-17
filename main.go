@@ -57,24 +57,9 @@ var issesTable = []Issue{
 		Title:       "issue 2",
 		Description: "This is issue 2",
 	},
-	{
-		ID:          3,
-		Title:       "issue 3",
-		Description: "This is issue 3",
-	},
-	{
-		ID:          4,
-		Title:       "issue 4",
-		Description: "This is issue 4",
-	},
-	{
-		ID:          5,
-		Title:       "issue 5",
-		Description: "This is issue 5",
-	},
 }
 
-func main() {
+func SetupRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.GET("/api/v1/issues", func(c *gin.Context) {
@@ -146,5 +131,10 @@ func main() {
 		}
 	})
 
-	router.Run()
+	return router
+}
+
+func main() {
+	router := SetupRouter()
+	router.Run(":8080")
 }
