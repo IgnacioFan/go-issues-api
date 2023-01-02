@@ -40,6 +40,7 @@ var router *gin.Engine
 func (test *SuiteTest) SetupSuite() {
 	dsn := "host=localhost user=postgres password=postgres dbname=issues_hub_test port=5432 sslmode=disable TimeZone=Asia/Taipei"
 	model.SetupDatabase(dsn)
+	model.SeedIssues()
 	router = SetupRouter()
 }
 
