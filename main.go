@@ -2,35 +2,28 @@ package main
 
 import (
 	"fmt"
+	"go-issues-api/model"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-type Issue struct {
-	ID          uint `gorm:"primaryKey"`
-	Title       string
-	Description string
-}
-
-func BuildIssue(title string, description string) *Issue {
-	return &Issue{
+func BuildIssue(title string, description string) *model.Issue {
+	return &model.Issue{
 		Title:       title,
 		Description: description,
 	}
 }
 
-func RenderIssue(item Issue) Issue {
-	return Issue{
+func RenderIssue(item model.Issue) model.Issue {
+	return model.Issue{
 		ID:          item.ID,
 		Title:       item.Title,
 		Description: item.Description,
 	}
 }
 
-func RenderIssues(items []Issue) (issues []Issue) {
+func RenderIssues(items []model.Issue) (issues []model.Issue) {
 	for _, item := range items {
 		issue := RenderIssue(item)
 		issues = append(issues, issue)
@@ -38,37 +31,25 @@ func RenderIssues(items []Issue) (issues []Issue) {
 	return issues
 }
 
-var issesTable = []Issue{
-	{
-		Title:       "issue 1",
-		Description: "This is issue 1",
-	},
-	{
-		Title:       "issue 2",
-		Description: "This is issue 2",
-	},
-}
-
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
 
-	dsn := "host=localhost user=postgres password=postgres dbname=issues_hub port=5432 sslmode=disable TimeZone=Asia/Taipei"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		panic("failed to connect database")
-	}
-
-	db.AutoMigrate(&issesTable)
+	var db = model.DB
 
 	router.GET("/api/v1/issues", func(c *gin.Context) {
-		var issues []Issue
+		var issues []model.Issue
 
-		db.Find(&issues) // result.RowsAffected, result.Error
+		result := db.Find(&issues) // result.RowsAffected, result.Error
 
+		if result.Error == nil {
 		c.JSON(200, gin.H{
 			"issues": RenderIssues(issues),
 		})
+		} else {
+			c.JSON(404, gin.H{
+				"error": "something wrong!",
+			})
+		}
 	})
 
 	router.POST("/api/v1/issues", func(c *gin.Context) {
@@ -92,7 +73,7 @@ func SetupRouter() *gin.Engine {
 	router.GET("/api/v1/issues/:id", func(c *gin.Context) {
 		issueId, _ := strconv.Atoi(c.Param("id"))
 
-		var issue Issue
+		var issue model.Issue
 		res := db.First(&issue, issueId)
 
 		if res.Error == nil {
@@ -109,13 +90,14 @@ func SetupRouter() *gin.Engine {
 	router.PUT("/api/v1/issues/:id", func(c *gin.Context) {
 		issueId, _ := strconv.Atoi(c.Param("id"))
 
-		var issue Issue
-		db.First(&issue, issueId)
-		issue.Title = c.PostForm("title")
-		issue.Description = c.PostForm("description")
-		res := db.Save(&issue)
+		var issue model.Issue
+		res := db.First(&issue, issueId)
 
 		if res.Error == nil {
+		issue.Title = c.PostForm("title")
+		issue.Description = c.PostForm("description")
+			db.Save(&issue)
+
 			c.JSON(200, gin.H{
 				"issue": RenderIssue(issue),
 			})
@@ -128,7 +110,7 @@ func SetupRouter() *gin.Engine {
 
 	router.DELETE("/api/v1/issues/:id", func(c *gin.Context) {
 		issueId, _ := strconv.Atoi(c.Param("id"))
-		res := db.Delete(&Issue{}, issueId)
+		res := db.Delete(&model.Issue{}, issueId)
 
 		if res.Error == nil && res.RowsAffected == 1 {
 			c.JSON(200, gin.H{
@@ -145,6 +127,8 @@ func SetupRouter() *gin.Engine {
 }
 
 func main() {
+	dsn := "host=localhost user=postgres password=postgres dbname=issues_hub port=5432 sslmode=disable TimeZone=Asia/Taipei"
+	model.SetupDatabase(dsn)
 	router := SetupRouter()
 	router.Run(":8080")
 }
