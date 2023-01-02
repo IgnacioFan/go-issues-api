@@ -1,6 +1,7 @@
 package main
 
 import (
+	"go-issues-api/model"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -8,7 +9,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
+	"github.com/go-playground/assert/v2"
+	"github.com/stretchr/testify/suite"
+	"gorm.io/gorm"
 )
 
 type RequestParams struct {
@@ -27,9 +30,35 @@ func RequestHelper(router *gin.Engine, params *RequestParams) *httptest.Response
 	return response
 }
 
-func TestIssuesRoute(t *testing.T) {
-	router := SetupRouter()
+type SuiteTest struct {
+	suite.Suite
+	db *gorm.DB
+}
 
+var router *gin.Engine
+
+func (test *SuiteTest) SetupSuite() {
+	dsn := "host=localhost user=postgres password=postgres dbname=issues_hub_test port=5432 sslmode=disable TimeZone=Asia/Taipei"
+	model.SetupDatabase(dsn)
+	router = SetupRouter()
+}
+
+func (test *SuiteTest) TearDownSuite() {
+	model.TearDownDatabase()
+}
+
+func TestSuite(t *testing.T) {
+	suite.Run(t, new(SuiteTest))
+}
+
+func (t *SuiteTest) TestAdd() {
+	want := 4
+	got := add(2, 2)
+
+	assert.Equal(t.T(), want, got)
+}
+
+func (t *SuiteTest) TestIssuesRoute() {
 	res := RequestHelper(
 		router,
 		&RequestParams{
@@ -38,8 +67,8 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   nil,
 		},
 	)
-	assert.Equal(t, http.StatusOK, res.Code)
-	assert.Equal(t, "{\"issues\":[{\"id\":1,\"title\":\"issue 1\",\"description\":\"This is issue 1\"},{\"id\":2,\"title\":\"issue 2\",\"description\":\"This is issue 2\"}]}", res.Body.String())
+	assert.Equal(t.T(), http.StatusOK, res.Code)
+	assert.Equal(t.T(), "{\"issues\":[{\"ID\":1,\"Title\":\"issue 1\",\"Description\":\"This is issue 1\"},{\"ID\":2,\"Title\":\"issue 2\",\"Description\":\"This is issue 2\"}]}", res.Body.String())
 
 	res = RequestHelper(
 		router,
@@ -49,8 +78,8 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   strings.NewReader("title=test&description=test test test"),
 		},
 	)
-	assert.Equal(t, http.StatusOK, res.Code)
-	assert.Equal(t, "{\"issue\":{\"id\":3,\"title\":\"test\",\"description\":\"test test test\"}}", res.Body.String())
+	assert.Equal(t.T(), http.StatusOK, res.Code)
+	assert.Equal(t.T(), "{\"issue\":{\"ID\":3,\"Title\":\"test\",\"Description\":\"test test test\"}}", res.Body.String())
 
 	res = RequestHelper(
 		router,
@@ -60,8 +89,8 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   nil,
 		},
 	)
-	assert.Equal(t, http.StatusOK, res.Code)
-	assert.Equal(t, "{\"issue\":{\"id\":2,\"title\":\"issue 2\",\"description\":\"This is issue 2\"}}", res.Body.String())
+	assert.Equal(t.T(), http.StatusOK, res.Code)
+	assert.Equal(t.T(), "{\"issue\":{\"ID\":2,\"Title\":\"issue 2\",\"Description\":\"This is issue 2\"}}", res.Body.String())
 
 	res = RequestHelper(
 		router,
@@ -71,8 +100,8 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   nil,
 		},
 	)
-	assert.Equal(t, http.StatusNotFound, res.Code)
-	assert.Equal(t, "{\"message\":\"id 4 is not found\"}", res.Body.String())
+	assert.Equal(t.T(), http.StatusNotFound, res.Code)
+	assert.Equal(t.T(), "{\"message\":\"id 4 is not found\"}", res.Body.String())
 
 	res = RequestHelper(
 		router,
@@ -82,8 +111,8 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   strings.NewReader("title=test&description=test test test"),
 		},
 	)
-	assert.Equal(t, http.StatusOK, res.Code)
-	assert.Equal(t, "{\"issue\":{\"id\":1,\"title\":\"test\",\"description\":\"test test test\"}}", res.Body.String())
+	assert.Equal(t.T(), http.StatusOK, res.Code)
+	assert.Equal(t.T(), "{\"issue\":{\"ID\":1,\"Title\":\"test\",\"Description\":\"test test test\"}}", res.Body.String())
 
 	res = RequestHelper(
 		router,
@@ -93,8 +122,8 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   strings.NewReader("title=test&description=test test test"),
 		},
 	)
-	assert.Equal(t, http.StatusNotFound, res.Code)
-	assert.Equal(t, "{\"message\":\"id 4 is not found\"}", res.Body.String())
+	assert.Equal(t.T(), http.StatusNotFound, res.Code)
+	assert.Equal(t.T(), "{\"message\":\"id 4 is not found\"}", res.Body.String())
 
 	res = RequestHelper(
 		router,
@@ -104,8 +133,8 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   nil,
 		},
 	)
-	assert.Equal(t, http.StatusOK, res.Code)
-	assert.Equal(t, "{\"message\":\"id 2 is removed\"}", res.Body.String())
+	assert.Equal(t.T(), http.StatusOK, res.Code)
+	assert.Equal(t.T(), "{\"message\":\"id 2 is removed\"}", res.Body.String())
 
 	res = RequestHelper(
 		router,
@@ -115,6 +144,6 @@ func TestIssuesRoute(t *testing.T) {
 			Body:   nil,
 		},
 	)
-	assert.Equal(t, http.StatusNotFound, res.Code)
-	assert.Equal(t, "{\"message\":\"id 4 is not found\"}", res.Body.String())
+	assert.Equal(t.T(), http.StatusNotFound, res.Code)
+	assert.Equal(t.T(), "{\"message\":\"id 4 is not found\"}", res.Body.String())
 }

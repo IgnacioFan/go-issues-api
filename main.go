@@ -42,9 +42,9 @@ func SetupRouter() *gin.Engine {
 		result := db.Find(&issues) // result.RowsAffected, result.Error
 
 		if result.Error == nil {
-		c.JSON(200, gin.H{
-			"issues": RenderIssues(issues),
-		})
+			c.JSON(200, gin.H{
+				"issues": RenderIssues(issues),
+			})
 		} else {
 			c.JSON(404, gin.H{
 				"error": "something wrong!",
@@ -94,8 +94,8 @@ func SetupRouter() *gin.Engine {
 		res := db.First(&issue, issueId)
 
 		if res.Error == nil {
-		issue.Title = c.PostForm("title")
-		issue.Description = c.PostForm("description")
+			issue.Title = c.PostForm("title")
+			issue.Description = c.PostForm("description")
 			db.Save(&issue)
 
 			c.JSON(200, gin.H{
@@ -124,6 +124,10 @@ func SetupRouter() *gin.Engine {
 	})
 
 	return router
+}
+
+func add(a, b int) int {
+	return a + b
 }
 
 func main() {
