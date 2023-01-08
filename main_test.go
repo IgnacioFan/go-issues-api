@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-issues-api/model"
+	"go-issues-api/routes"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -48,7 +49,7 @@ func (test *SuiteTest) SetupSuite() {
 	)
 	model.SetupDatabase(dsn)
 	model.SeedIssues()
-	router = SetupRouter()
+	router = routes.SetupRouter()
 }
 
 func (test *SuiteTest) TearDownSuite() {
