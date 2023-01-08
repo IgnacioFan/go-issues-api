@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-issues-api/model"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -131,8 +132,13 @@ func add(a, b int) int {
 }
 
 func main() {
-	dsn := "host=localhost user=postgres password=postgres dbname=issues_hub port=5432 sslmode=disable TimeZone=Asia/Taipei"
+	dsn := fmt.Sprintf(
+		"host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Taipei",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME_DEV"),
+	)
 	model.SetupDatabase(dsn)
 	router := SetupRouter()
-	router.Run(":8080")
+	router.Run(":3000")
 }

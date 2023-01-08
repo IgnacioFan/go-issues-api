@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"go-issues-api/model"
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -38,7 +40,12 @@ type SuiteTest struct {
 var router *gin.Engine
 
 func (test *SuiteTest) SetupSuite() {
-	dsn := "host=localhost user=postgres password=postgres dbname=issues_hub_test port=5432 sslmode=disable TimeZone=Asia/Taipei"
+	dsn := fmt.Sprintf(
+		"host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Taipei",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME_TEST"),
+	)
 	model.SetupDatabase(dsn)
 	model.SeedIssues()
 	router = SetupRouter()
