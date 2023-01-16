@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"go-issues-api/model"
+	"go-issues-api/database"
 	"go-issues-api/routes"
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -41,30 +39,17 @@ type SuiteTest struct {
 var router *gin.Engine
 
 func (test *SuiteTest) SetupSuite() {
-	dsn := fmt.Sprintf(
-		"host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Taipei",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME_TEST"),
-	)
-	model.SetupDatabase(dsn)
-	model.SeedIssues()
+	database.ConnectDatabase("test")
+	database.SeedIssues()
 	router = routes.SetupRouter()
 }
 
 func (test *SuiteTest) TearDownSuite() {
-	model.TearDownDatabase()
+	database.DisconnectDatabase()
 }
 
 func TestSuite(t *testing.T) {
 	suite.Run(t, new(SuiteTest))
-}
-
-func (t *SuiteTest) TestAdd() {
-	want := 4
-	got := add(2, 2)
-
-	assert.Equal(t.T(), want, got)
 }
 
 func (t *SuiteTest) TestIssuesRoute() {
