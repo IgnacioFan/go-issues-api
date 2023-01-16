@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-issues-api/database"
+	"go-issues-api/issue"
 	"go-issues-api/routes"
 	"io"
 	"net/http"
@@ -40,7 +41,7 @@ var router *gin.Engine
 
 func (test *SuiteTest) SetupSuite() {
 	database.Connect("test")
-	database.SeedIssues()
+	issue.Seed()
 	router = routes.SetupRouter()
 }
 

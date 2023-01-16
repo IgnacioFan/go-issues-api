@@ -5,6 +5,20 @@ import (
 	"go-issues-api/model"
 )
 
+func Seed() {
+	var seedIssues = []model.Issue{
+		{
+			Title:       "issue 1",
+			Description: "This is issue 1",
+		},
+		{
+			Title:       "issue 2",
+			Description: "This is issue 2",
+		},
+	}
+	database.DB.Create(&seedIssues)
+}
+
 func Create(title, description string) (model.Issue, error) {
 	issue := &model.Issue{
 		Title:       title,

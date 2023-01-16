@@ -24,32 +24,17 @@ func Connect(mode string) {
 
 	fmt.Println("connect to database")
 
-	err := DB.AutoMigrate(&model.Issue{}) // TODO: refactor later
+	err := DB.AutoMigrate(&model.Issue{}) // TODO: consider using goose
 
 	if err != nil {
 		panic("failed to run data migration")
 	}
 }
 
-// TODO: refactor later
-func SeedIssues() {
-	var seedIssues = []model.Issue{
-		{
-			Title:       "issue 1",
-			Description: "This is issue 1",
-		},
-		{
-			Title:       "issue 2",
-			Description: "This is issue 2",
-		},
-	}
-	DB.Create(&seedIssues)
-}
-
 func Disconnect() {
 	db, _ := DB.DB()
 	defer db.Close()
-	DB.Migrator().DropTable(&model.Issue{})
+	DB.Migrator().DropTable(&model.Issue{}) // TODO: consider using goose
 }
 
 func dsn(mode string) string {
