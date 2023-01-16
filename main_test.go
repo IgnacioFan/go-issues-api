@@ -39,13 +39,13 @@ type SuiteTest struct {
 var router *gin.Engine
 
 func (test *SuiteTest) SetupSuite() {
-	database.ConnectDatabase("test")
+	database.Connect("test")
 	database.SeedIssues()
 	router = routes.SetupRouter()
 }
 
 func (test *SuiteTest) TearDownSuite() {
-	database.DisconnectDatabase()
+	database.Disconnect()
 }
 
 func TestSuite(t *testing.T) {

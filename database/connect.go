@@ -14,7 +14,7 @@ var (
 	err error
 )
 
-func ConnectDatabase(mode string) {
+func Connect(mode string) {
 	DB, err = gorm.Open(postgres.Open(dsn(mode)), &gorm.Config{})
 
 	if err != nil {
@@ -46,7 +46,7 @@ func SeedIssues() {
 	DB.Create(&seedIssues)
 }
 
-func DisconnectDatabase() {
+func Disconnect() {
 	db, _ := DB.DB()
 	defer db.Close()
 	DB.Migrator().DropTable(&model.Issue{})

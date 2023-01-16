@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	database.ConnectDatabase("dev")
+	database.Connect("dev")
 	router := routes.SetupRouter()
 	router.Run(":3000")
 }
