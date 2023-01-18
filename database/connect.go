@@ -3,8 +3,11 @@ package database
 import (
 	"fmt"
 	"go-issues-api/config"
-	"go-issues-api/model"
+	"log"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -18,23 +21,23 @@ func Connect(mode string) {
 	DB, err = gorm.Open(postgres.Open(dsn(mode)), &gorm.Config{})
 
 	if err != nil {
-		fmt.Println(err.Error())
-		panic("failed to connect database")
+		log.Fatal(err)
 	}
 
-	fmt.Println("connect to database")
-
-	err := DB.AutoMigrate(&model.Issue{}) // TODO: consider using goose
-
-	if err != nil {
-		panic("failed to run data migration")
+	m := Migrate(mode)
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
 	}
 }
 
-func Disconnect() {
+func Disconnect(mode string) {
 	db, _ := DB.DB()
 	defer db.Close()
-	DB.Migrator().DropTable(&model.Issue{}) // TODO: consider using goose
+
+	m := Migrate(mode)
+	if err := m.Down(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
+	}
 }
 
 func dsn(mode string) string {
@@ -50,4 +53,23 @@ func dsn(mode string) string {
 		conn.Ssl,
 		conn.Timezone,
 	)
+}
+
+func Migrate(mode string) *migrate.Migrate {
+	dbConfig := config.PostgresConn(mode)
+	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		dbConfig.User,
+		dbConfig.Password,
+		dbConfig.Host,
+		dbConfig.Port,
+		dbConfig.Dbname,
+		dbConfig.Ssl,
+	)
+
+	m, err := migrate.New(config.MigrationsPath(), dbUrl)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	return m
 }

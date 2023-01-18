@@ -46,7 +46,7 @@ func (test *SuiteTest) SetupSuite() {
 }
 
 func (test *SuiteTest) TearDownSuite() {
-	database.Disconnect()
+	database.Disconnect("test")
 }
 
 func TestSuite(t *testing.T) {

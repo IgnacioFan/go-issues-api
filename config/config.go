@@ -36,3 +36,7 @@ func PostgresConn(mode string) PostgresConfig {
 		Timezone: "Asia/Taipei",
 	}
 }
+
+func MigrationsPath() string {
+	return os.Getenv("MIGRATION_PATH")
+}
