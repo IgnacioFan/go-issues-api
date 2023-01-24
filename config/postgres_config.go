@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type PostgresConfig struct {
 	Host     string
@@ -12,10 +15,10 @@ type PostgresConfig struct {
 	Timezone string
 }
 
-func PostgresConn(mode string) PostgresConfig {
+func NewPostgresConfig(mode string) *PostgresConfig {
 
 	if mode == "test" {
-		return PostgresConfig{
+		return &PostgresConfig{
 			Host:     "db",
 			User:     os.Getenv("DB_USER"),
 			Password: os.Getenv("DB_PASSWORD"),
@@ -26,7 +29,7 @@ func PostgresConn(mode string) PostgresConfig {
 		}
 	}
 
-	return PostgresConfig{
+	return &PostgresConfig{
 		Host:     "db",
 		User:     os.Getenv("DB_USER"),
 		Password: os.Getenv("DB_PASSWORD"),
@@ -37,6 +40,25 @@ func PostgresConn(mode string) PostgresConfig {
 	}
 }
 
-func MigrationsPath() string {
-	return os.Getenv("MIGRATION_PATH")
+func (this *PostgresConfig) Url() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		this.User,
+		this.Password,
+		this.Host,
+		this.Port,
+		this.Dbname,
+		this.Ssl,
+	)
+}
+
+func (this *PostgresConfig) Dsn() string {
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+		this.Host,
+		this.User,
+		this.Password,
+		this.Dbname,
+		this.Port,
+		this.Ssl,
+		this.Timezone,
+	)
 }

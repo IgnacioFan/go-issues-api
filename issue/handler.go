@@ -7,6 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func NewIssueHandler(router *gin.RouterGroup) {
+	router.GET("issues", GetIssues)
+	router.POST("issues", CreateIssue)
+	router.GET("issues/:id", GetIssue)
+	router.PUT("issues/:id", UpdateIssue)
+	router.DELETE("issues/:id", DeleteIssue)
+}
+
 func GetIssues(c *gin.Context) {
 	issues, err := FindAll()
 

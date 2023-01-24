@@ -14,11 +14,7 @@ func SetupRouter() *gin.Engine {
 		ctx.JSON(200, "success")
 	})
 
-	v1.GET("issues", issue.GetIssues)
-	v1.POST("issues", issue.CreateIssue)
-	v1.GET("issues/:id", issue.GetIssue)
-	v1.PUT("issues/:id", issue.UpdateIssue)
-	v1.DELETE("issues/:id", issue.DeleteIssue)
+	issue.NewIssueHandler(v1)
 
 	return router
 }
