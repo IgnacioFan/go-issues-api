@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"go-issues-api/issue"
+	"go-issues-api/domain/issue"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

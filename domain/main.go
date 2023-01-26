@@ -3,7 +3,7 @@ package main
 import (
 	"go-issues-api/database"
 
-	_r "go-issues-api/routes"
+	_r "go-issues-api/domain/routes"
 )
 
 func main() {

@@ -23,7 +23,7 @@ func Connect(mode string) *gorm.DB {
 
 	if mode == "dev" {
 		dbConfig := config.NewPostgresConfig("dev")
-		m := NewMigrate("database/migrations", dbConfig.Url())
+		m := NewMigrate("../database/migrations", dbConfig.Url())
 		m.Up()
 	}
 
@@ -36,7 +36,7 @@ func Disconnect(mode string) {
 
 	if mode == "dev" {
 		dbConfig := config.NewPostgresConfig("dev")
-		m := NewMigrate("database/migrations", dbConfig.Url())
+		m := NewMigrate("../database/migrations", dbConfig.Url())
 		m.Down()
 	}
 }

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"go-issues-api/issue/mocks"
-	"go-issues-api/model"
+	"go-issues-api/domain/issue/mocks"
+	"go-issues-api/domain/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"

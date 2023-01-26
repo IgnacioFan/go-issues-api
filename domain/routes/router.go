@@ -1,10 +1,10 @@
 package routes
 
 import (
-	_issueHanlderRest "go-issues-api/issue/handler"
-	_issueRepository "go-issues-api/issue/repository"
-	_issueUsecase "go-issues-api/issue/usercase"
-	_userRepository "go-issues-api/user/repository"
+	_issueHanlderRest "go-issues-api/domain/issue/handler"
+	_issueRepository "go-issues-api/domain/issue/repository"
+	_issueUsecase "go-issues-api/domain/issue/usercase"
+	_userRepository "go-issues-api/domain/user/repository"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
