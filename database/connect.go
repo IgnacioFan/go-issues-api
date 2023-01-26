@@ -13,7 +13,7 @@ var (
 	err error
 )
 
-func Connect(mode string) {
+func Connect(mode string) *gorm.DB {
 	postgresConfig := config.NewPostgresConfig(mode)
 	DB, err = gorm.Open(postgres.Open(postgresConfig.Dsn()), &gorm.Config{})
 
@@ -21,19 +21,21 @@ func Connect(mode string) {
 		log.Fatal(err)
 	}
 
-	if mode != "test" {
-		dbConfig := config.NewPostgresConfig("test")
+	if mode == "dev" {
+		dbConfig := config.NewPostgresConfig("dev")
 		m := NewMigrate("database/migrations", dbConfig.Url())
 		m.Up()
 	}
+
+	return DB
 }
 
 func Disconnect(mode string) {
 	db, _ := DB.DB()
 	defer db.Close()
 
-	if mode != "test" {
-		dbConfig := config.NewPostgresConfig("test")
+	if mode == "dev" {
+		dbConfig := config.NewPostgresConfig("dev")
 		m := NewMigrate("database/migrations", dbConfig.Url())
 		m.Down()
 	}

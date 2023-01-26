@@ -2,11 +2,15 @@ package main
 
 import (
 	"go-issues-api/database"
-	"go-issues-api/routes"
+
+	_r "go-issues-api/routes"
 )
 
 func main() {
-	database.Connect("dev")
-	router := routes.SetupRouter()
-	router.Run(":3000")
+	dbConn := database.Connect("dev")
+
+	s := _r.Router{
+		DBConn: dbConn,
+	}
+	s.Start()
 }
