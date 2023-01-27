@@ -58,22 +58,23 @@ func (this *IssueRest) GetIssue(c *gin.Context) {
 	}
 }
 
-// func UpdateIssue(c *gin.Context) {
-// 	id, _ := strconv.Atoi(c.Param("id"))
-// 	title := c.PostForm("title")
-// 	description := c.PostForm("description")
-// 	issue, err := FindAndUpdate(id, title, description)
+func (this *IssueRest) UpdateIssue(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	title := c.PostForm("title")
+	description := c.PostForm("description")
 
-// 	if err == nil {
-// 		c.JSON(200, gin.H{
-// 			"issue": issue,
-// 		})
-// 	} else {
-// 		c.JSON(404, gin.H{
-// 			"message": fmt.Sprintf("id %v is not found", id),
-// 		})
-// 	}
-// }
+	issue, err := this.Usecase.FindAndUpdate(id, title, description)
+
+	if err == nil {
+		c.JSON(200, gin.H{
+			"data": issue,
+		})
+	} else {
+		c.JSON(404, gin.H{
+			"data": err.Error(),
+		})
+	}
+}
 
 // func DeleteIssue(c *gin.Context) {
 // 	id, _ := strconv.Atoi(c.Param("id"))

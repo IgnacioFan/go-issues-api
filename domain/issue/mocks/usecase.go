@@ -27,6 +27,29 @@ func (_m *Usecase) Create(userId int, title string, description string) error {
 	return r0
 }
 
+// FindAndUpdate provides a mock function with given fields: id, title, description
+func (_m *Usecase) FindAndUpdate(id int, title string, description string) (*model.Issue, error) {
+	ret := _m.Called(id, title, description)
+
+	var r0 *model.Issue
+	if rf, ok := ret.Get(0).(func(int, string, string) *model.Issue); ok {
+		r0 = rf(id, title, description)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.Issue)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int, string, string) error); ok {
+		r1 = rf(id, title, description)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindBy provides a mock function with given fields: id
 func (_m *Usecase) FindBy(id int) (*model.Issue, error) {
 	ret := _m.Called(id)

@@ -44,3 +44,18 @@ func (this *IssueUsercase) FindBy(id int) (*model.Issue, error) {
 	issue, err := this.IssueRepository.FindBy(id)
 	return issue, err
 }
+
+func (this *IssueUsercase) FindAndUpdate(id int, title, description string) (*model.Issue, error) {
+	var err error
+	issue, err := this.IssueRepository.FindBy(id)
+
+	if err != nil {
+		return issue, err
+	}
+
+	issue.Title = title
+	issue.Description = description
+	issue, err = this.IssueRepository.Update(issue)
+
+	return issue, err
+}

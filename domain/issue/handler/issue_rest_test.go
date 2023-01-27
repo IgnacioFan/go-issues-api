@@ -131,27 +131,57 @@ func TestGetIssue(t *testing.T) {
 	assert.Equal(t, "{\"data\":\"record not found\"}", w.Body.String())
 }
 
-// func (t *SuiteTest) TestUpdateIssue() {
-// 	res := t.RequestHelper(
-// 		&RequestParams{
-// 			Action: http.MethodPut,
-// 			Url:    "/api/v1/issues/1",
-// 			Body:   strings.NewReader("title=test&description=test test test"),
-// 		},
-// 	)
-// 	assert.Equal(t.T(), http.StatusOK, res.Code)
-// 	assert.Equal(t.T(), "{\"issue\":{\"ID\":1,\"Title\":\"test\",\"Description\":\"test test test\"}}", res.Body.String())
+func TestUpdateIssue(t *testing.T) {
+	auther := &model.User{
+		ID:   1,
+		Name: "Foo Bar",
+	}
+	result := &model.Issue{
+		ID:          1,
+		Title:       "updated title",
+		Description: "updated text",
+		Author:      *auther,
+	}
 
-// 	res = t.RequestHelper(
-// 		&RequestParams{
-// 			Action: http.MethodPut,
-// 			Url:    "/api/v1/issues/4",
-// 			Body:   strings.NewReader("title=test&description=test test test"),
-// 		},
-// 	)
-// 	assert.Equal(t.T(), http.StatusNotFound, res.Code)
-// 	assert.Equal(t.T(), "{\"message\":\"id 4 is not found\"}", res.Body.String())
-// }
+	usecase := new(mocks.Usecase)
+	usecase.On("FindAndUpdate", 1, "updated title", "updated text").Return(result, nil)
+	handler := NewIssueRest(usecase)
+
+	r := gin.Default()
+	r.PUT("api/v1/issues/:id", handler.UpdateIssue)
+
+	req, err := http.NewRequest(http.MethodPut, "/api/v1/issues/1", strings.NewReader("title=updated title&description=updated text"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Expected to get status %d but instead got %d\n", http.StatusOK, w.Code)
+	}
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "{\"data\":{\"id\":1,\"title\":\"updated title\",\"description\":\"updated text\",\"author\":{\"id\":1,\"name\":\"Foo Bar\"}}}", w.Body.String())
+
+	usecase.On("FindAndUpdate", 2, "updated title", "updated text").Return(nil, errors.New("record not found"))
+
+	req, err = http.NewRequest(http.MethodPut, "/api/v1/issues/2", strings.NewReader("title=updated title&description=updated text"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
+	assert.Equal(t, "{\"data\":\"record not found\"}", w.Body.String())
+}
 
 // func (t *SuiteTest) TestDeleteIssue() {
 // 	res := t.RequestHelper(

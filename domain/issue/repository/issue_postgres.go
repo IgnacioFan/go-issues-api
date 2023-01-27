@@ -37,19 +37,11 @@ func (this *IssueRepository) FindBy(id int) (*model.Issue, error) {
 	return issue, res.Error
 }
 
-// func FindAndUpdate(id int, title, description string) (model.Issue, error) {
-// 	issue, err := Find(id)
+func (this *IssueRepository) Update(issue *model.Issue) (*model.Issue, error) {
+	res := this.DB.Save(&issue)
 
-// 	if err != nil {
-// 		return issue, err
-// 	}
-
-// 	issue.Title = title
-// 	issue.Description = description
-// 	res := database.DB.Save(&issue)
-
-// 	return issue, res.Error
-// }
+	return issue, res.Error
+}
 
 // func Delete(id int) (int64, error) {
 // 	res := database.DB.Delete(&model.Issue{}, id)
