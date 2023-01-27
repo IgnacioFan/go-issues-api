@@ -30,12 +30,12 @@ func (this *IssueRepository) Create(issue *model.Issue) error {
 	return res.Error
 }
 
-// func Find(id int) (model.Issue, error) {
-// 	var issue model.Issue
-// 	res := database.DB.First(&issue, id)
+func (this *IssueRepository) FindBy(id int) (*model.Issue, error) {
+	var issue *model.Issue
+	res := this.DB.Joins("Author").First(&issue, id)
 
-// 	return issue, res.Error
-// }
+	return issue, res.Error
+}
 
 // func FindAndUpdate(id int, title, description string) (model.Issue, error) {
 // 	issue, err := Find(id)

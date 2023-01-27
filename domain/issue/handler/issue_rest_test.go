@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -82,27 +83,53 @@ func TestCreateIssue(t *testing.T) {
 	assert.Equal(t, "{\"data\":\"succussfully created an issue!\"}", w.Body.String())
 }
 
-// func (t *SuiteTest) TestGetIssue() {
-// 	res := t.RequestHelper(
-// 		&RequestParams{
-// 			Action: http.MethodGet,
-// 			Url:    "/api/v1/issues/2",
-// 			Body:   nil,
-// 		},
-// 	)
-// 	assert.Equal(t.T(), http.StatusOK, res.Code)
-// 	assert.Equal(t.T(), "{\"issue\":{\"ID\":2,\"Title\":\"issue 2\",\"Description\":\"This is issue 2\"}}", res.Body.String())
+func TestGetIssue(t *testing.T) {
+	auther := &model.User{
+		ID:   1,
+		Name: "Foo Bar",
+	}
+	result := &model.Issue{
+		ID:          1,
+		Title:       "issue",
+		Description: "Hello world",
+		Author:      *auther,
+	}
 
-// 	res = t.RequestHelper(
-// 		&RequestParams{
-// 			Action: http.MethodGet,
-// 			Url:    "/api/v1/issues/4",
-// 			Body:   nil,
-// 		},
-// 	)
-// 	assert.Equal(t.T(), http.StatusNotFound, res.Code)
-// 	assert.Equal(t.T(), "{\"message\":\"id 4 is not found\"}", res.Body.String())
-// }
+	usecase := new(mocks.Usecase)
+	usecase.On("FindBy", 1).Return(result, nil)
+	handler := NewIssueRest(usecase)
+
+	r := gin.Default()
+	r.GET("api/v1/issues/:id", handler.GetIssue)
+
+	req, err := http.NewRequest(http.MethodGet, "/api/v1/issues/1", nil)
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Expected to get status %d but instead got %d\n", http.StatusOK, w.Code)
+	}
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "{\"data\":{\"id\":1,\"title\":\"issue\",\"description\":\"Hello world\",\"author\":{\"id\":1,\"name\":\"Foo Bar\"}}}", w.Body.String())
+
+	usecase.On("FindBy", 2).Return(nil, errors.New("record not found"))
+
+	req, err = http.NewRequest(http.MethodGet, "/api/v1/issues/2", nil)
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
+	assert.Equal(t, "{\"data\":\"record not found\"}", w.Body.String())
+}
 
 // func (t *SuiteTest) TestUpdateIssue() {
 // 	res := t.RequestHelper(

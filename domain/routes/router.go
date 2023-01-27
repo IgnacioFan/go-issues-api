@@ -25,9 +25,9 @@ func (s *Router) Start() {
 	v1 := router.Group("api/v1")
 	v1.GET("issues", issueHandler.GetIssues)
 	v1.POST("issues", issueHandler.CreateIssue)
-	// v1.GET("issues/:id", GetIssue)
-	// v1.PUT("issues/:id", UpdateIssue)
-	// v1.DELETE("issues/:id", DeleteIssue)
+	v1.GET("issues/:id", issueHandler.GetIssue)
+	// v1.PUT("issues/:id", issueHandler.UpdateIssue)
+	// v1.DELETE("issues/:id", issueHandler.DeleteIssue)
 
 	v1.GET("ping", func(ctx *gin.Context) {
 		ctx.JSON(200, "success")

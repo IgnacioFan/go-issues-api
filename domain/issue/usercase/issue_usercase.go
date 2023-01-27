@@ -39,3 +39,8 @@ func (this *IssueUsercase) Create(userId int, title string, description string) 
 
 	return err
 }
+
+func (this *IssueUsercase) FindBy(id int) (*model.Issue, error) {
+	issue, err := this.IssueRepository.FindBy(id)
+	return issue, err
+}

@@ -43,20 +43,20 @@ func (this *IssueRest) CreateIssue(c *gin.Context) {
 	})
 }
 
-// func GetIssue(c *gin.Context) {
-// 	id, _ := strconv.Atoi(c.Param("id"))
-// 	issue, err := Find(id)
+func (this *IssueRest) GetIssue(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	issue, err := this.Usecase.FindBy(id)
 
-// 	if err == nil {
-// 		c.JSON(200, gin.H{
-// 			"issue": issue,
-// 		})
-// 	} else {
-// 		c.JSON(404, gin.H{
-// 			"message": fmt.Sprintf("id %v is not found", id),
-// 		})
-// 	}
-// }
+	if err == nil {
+		c.JSON(200, gin.H{
+			"data": issue,
+		})
+	} else {
+		c.JSON(404, gin.H{
+			"data": err.Error(),
+		})
+	}
+}
 
 // func UpdateIssue(c *gin.Context) {
 // 	id, _ := strconv.Atoi(c.Param("id"))
