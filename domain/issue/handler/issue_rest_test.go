@@ -183,24 +183,43 @@ func TestUpdateIssue(t *testing.T) {
 	assert.Equal(t, "{\"data\":\"record not found\"}", w.Body.String())
 }
 
-// func (t *SuiteTest) TestDeleteIssue() {
-// 	res := t.RequestHelper(
-// 		&RequestParams{
-// 			Action: http.MethodDelete,
-// 			Url:    "/api/v1/issues/2",
-// 			Body:   nil,
-// 		},
-// 	)
-// 	assert.Equal(t.T(), http.StatusOK, res.Code)
-// 	assert.Equal(t.T(), "{\"message\":\"id 2 is removed\"}", res.Body.String())
+func TestDeleteIssue(t *testing.T) {
+	var affected int64 = 1
+	usecase := new(mocks.Usecase)
+	usecase.On("DeleteBy", 1).Return(affected, nil)
+	handler := NewIssueRest(usecase)
 
-// 	res = t.RequestHelper(
-// 		&RequestParams{
-// 			Action: http.MethodDelete,
-// 			Url:    "/api/v1/issues/4",
-// 			Body:   nil,
-// 		},
-// 	)
-// 	assert.Equal(t.T(), http.StatusNotFound, res.Code)
-// 	assert.Equal(t.T(), "{\"message\":\"id 4 is not found\"}", res.Body.String())
-// }
+	r := gin.Default()
+	r.DELETE("api/v1/issues/:id", handler.DeleteIssue)
+
+	req, err := http.NewRequest(http.MethodDelete, "/api/v1/issues/1", nil)
+
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Expected to get status %d but instead got %d\n", http.StatusOK, w.Code)
+	}
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "{\"data\":\"id 1 is removed\"}", w.Body.String())
+
+	affected = 0
+	usecase.On("DeleteBy", 2).Return(affected, errors.New("record not found"))
+
+	req, err = http.NewRequest(http.MethodDelete, "/api/v1/issues/2", nil)
+
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
+	assert.Equal(t, "{\"data\":\"record not found\"}", w.Body.String())
+}

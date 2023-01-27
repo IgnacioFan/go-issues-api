@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"go-issues-api/domain/issue"
 	"strconv"
 
@@ -76,17 +77,17 @@ func (this *IssueRest) UpdateIssue(c *gin.Context) {
 	}
 }
 
-// func DeleteIssue(c *gin.Context) {
-// 	id, _ := strconv.Atoi(c.Param("id"))
-// 	affected, err := Delete(id)
+func (this *IssueRest) DeleteIssue(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	affected, err := this.Usecase.DeleteBy(id)
 
-// 	if err == nil && affected == 1 {
-// 		c.JSON(200, gin.H{
-// 			"message": fmt.Sprintf("id %v is removed", id),
-// 		})
-// 	} else {
-// 		c.JSON(404, gin.H{
-// 			"message": fmt.Sprintf("id %v is not found", id),
-// 		})
-// 	}
-// }
+	if err == nil && affected == 1 {
+		c.JSON(200, gin.H{
+			"data": fmt.Sprintf("id %v is removed", id),
+		})
+	} else {
+		c.JSON(404, gin.H{
+			"data": err.Error(),
+		})
+	}
+}

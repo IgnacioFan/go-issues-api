@@ -59,3 +59,16 @@ func (this *IssueUsercase) FindAndUpdate(id int, title, description string) (*mo
 
 	return issue, err
 }
+
+func (this *IssueUsercase) DeleteBy(id int) (int64, error) {
+	var err error
+	issue, err := this.IssueRepository.FindBy(id)
+
+	if err != nil {
+		return int64(0), err
+	}
+
+	affected, err := this.IssueRepository.Delete(int(issue.ID))
+
+	return affected, err
+}

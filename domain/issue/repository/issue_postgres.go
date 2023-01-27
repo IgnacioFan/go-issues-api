@@ -43,8 +43,7 @@ func (this *IssueRepository) Update(issue *model.Issue) (*model.Issue, error) {
 	return issue, res.Error
 }
 
-// func Delete(id int) (int64, error) {
-// 	res := database.DB.Delete(&model.Issue{}, id)
-
-// 	return res.RowsAffected, res.Error
-// }
+func (this *IssueRepository) Delete(id int) (int64, error) {
+	res := this.DB.Delete(&model.Issue{}, id)
+	return res.RowsAffected, res.Error
+}
