@@ -1,6 +1,6 @@
 package issue
 
-import "go-issues-api/domain/model"
+import "go-issues-api/core/model"
 
 type Usecase interface {
 	GetAll() ([]*model.Issue, error)

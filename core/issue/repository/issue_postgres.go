@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"go-issues-api/domain/model"
+	"go-issues-api/core/model"
 
 	"gorm.io/gorm"
 )

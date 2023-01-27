@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"go-issues-api/domain/issue/mocks"
-	"go-issues-api/domain/model"
+	"go-issues-api/core/issue/mocks"
+	"go-issues-api/core/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
@@ -36,7 +36,7 @@ func TestGetIssues(t *testing.T) {
 
 	usecase := new(mocks.Usecase)
 	usecase.On("GetAll").Return(result, nil)
-	handler := NewIssueRest(usecase)
+	handler := NewIssueHttp(usecase)
 
 	r := gin.Default()
 	r.GET("api/v1/issues", handler.GetIssues)
@@ -60,7 +60,7 @@ func TestGetIssues(t *testing.T) {
 func TestCreateIssue(t *testing.T) {
 	usecase := new(mocks.Usecase)
 	usecase.On("Create", 1, "test", "test test test").Return(nil)
-	handler := NewIssueRest(usecase)
+	handler := NewIssueHttp(usecase)
 
 	r := gin.Default()
 	r.POST("api/v1/issues", handler.CreateIssue)
@@ -97,7 +97,7 @@ func TestGetIssue(t *testing.T) {
 
 	usecase := new(mocks.Usecase)
 	usecase.On("FindBy", 1).Return(result, nil)
-	handler := NewIssueRest(usecase)
+	handler := NewIssueHttp(usecase)
 
 	r := gin.Default()
 	r.GET("api/v1/issues/:id", handler.GetIssue)
@@ -145,7 +145,7 @@ func TestUpdateIssue(t *testing.T) {
 
 	usecase := new(mocks.Usecase)
 	usecase.On("FindAndUpdate", 1, "updated title", "updated text").Return(result, nil)
-	handler := NewIssueRest(usecase)
+	handler := NewIssueHttp(usecase)
 
 	r := gin.Default()
 	r.PUT("api/v1/issues/:id", handler.UpdateIssue)
@@ -187,7 +187,7 @@ func TestDeleteIssue(t *testing.T) {
 	var affected int64 = 1
 	usecase := new(mocks.Usecase)
 	usecase.On("DeleteBy", 1).Return(affected, nil)
-	handler := NewIssueRest(usecase)
+	handler := NewIssueHttp(usecase)
 
 	r := gin.Default()
 	r.DELETE("api/v1/issues/:id", handler.DeleteIssue)

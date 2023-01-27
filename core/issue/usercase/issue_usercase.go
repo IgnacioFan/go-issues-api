@@ -1,9 +1,9 @@
 package usercase
 
 import (
-	_issueRepository "go-issues-api/domain/issue"
-	"go-issues-api/domain/model"
-	_userRepository "go-issues-api/domain/user"
+	_issueRepository "go-issues-api/core/issue"
+	"go-issues-api/core/model"
+	_userRepository "go-issues-api/core/user"
 )
 
 type IssueUsercase struct {

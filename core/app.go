@@ -1,15 +1,14 @@
 package main
 
 import (
+	"go-issues-api/core/server"
 	"go-issues-api/database"
-
-	_r "go-issues-api/domain/routes"
 )
 
 func main() {
 	dbConn := database.Connect("dev")
 
-	s := _r.Router{
+	s := server.Server{
 		DBConn: dbConn,
 	}
 	s.Start()

@@ -2,21 +2,21 @@ package handler
 
 import (
 	"fmt"
-	"go-issues-api/domain/issue"
+	"go-issues-api/core/issue"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-type IssueRest struct {
+type IssueHttp struct {
 	Usecase issue.Usecase
 }
 
-func NewIssueRest(usecase issue.Usecase) *IssueRest {
-	return &IssueRest{Usecase: usecase}
+func NewIssueHttp(usecase issue.Usecase) *IssueHttp {
+	return &IssueHttp{Usecase: usecase}
 }
 
-func (this *IssueRest) GetIssues(c *gin.Context) {
+func (this *IssueHttp) GetIssues(c *gin.Context) {
 	issues, err := this.Usecase.GetAll()
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (this *IssueRest) GetIssues(c *gin.Context) {
 	})
 }
 
-func (this *IssueRest) CreateIssue(c *gin.Context) {
+func (this *IssueHttp) CreateIssue(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.PostForm("id"))
 	title := c.PostForm("title")
 	description := c.PostForm("description")
@@ -44,7 +44,7 @@ func (this *IssueRest) CreateIssue(c *gin.Context) {
 	})
 }
 
-func (this *IssueRest) GetIssue(c *gin.Context) {
+func (this *IssueHttp) GetIssue(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	issue, err := this.Usecase.FindBy(id)
 
@@ -59,7 +59,7 @@ func (this *IssueRest) GetIssue(c *gin.Context) {
 	}
 }
 
-func (this *IssueRest) UpdateIssue(c *gin.Context) {
+func (this *IssueHttp) UpdateIssue(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	title := c.PostForm("title")
 	description := c.PostForm("description")
@@ -77,7 +77,7 @@ func (this *IssueRest) UpdateIssue(c *gin.Context) {
 	}
 }
 
-func (this *IssueRest) DeleteIssue(c *gin.Context) {
+func (this *IssueHttp) DeleteIssue(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	affected, err := this.Usecase.DeleteBy(id)
 

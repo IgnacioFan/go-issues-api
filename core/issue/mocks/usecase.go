@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	model "go-issues-api/domain/model"
+	model "go-issues-api/core/model"
 
 	mock "github.com/stretchr/testify/mock"
 )
