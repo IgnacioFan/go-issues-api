@@ -1,10 +1,12 @@
 package server
 
 import (
-	_issueHanlderRest "go-issues-api/core/issue/handler"
+	_issueHanlderHttp "go-issues-api/core/issue/handler"
 	_issueRepository "go-issues-api/core/issue/repository"
-	_issueUsecase "go-issues-api/core/issue/usercase"
+	_issueUsecase "go-issues-api/core/issue/usecase"
+	_userHanlderHttp "go-issues-api/core/user/handler"
 	_userRepository "go-issues-api/core/user/repository"
+	_userUsecase "go-issues-api/core/user/usecase"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -15,19 +17,24 @@ type Server struct {
 }
 
 func (s *Server) Start() {
+	router := gin.Default()
+	v1 := router.Group("api/v1")
+
 	issueRepo := _issueRepository.NewIssueRepository(s.DBConn)
 	userRepo := _userRepository.NewUserRepository(s.DBConn)
-	issueUsecase := _issueUsecase.NewIssueUsercase(userRepo, issueRepo)
-	issueHandler := _issueHanlderRest.NewIssueHttp(issueUsecase)
+	issueUsecase := _issueUsecase.NewIssueUsecase(userRepo, issueRepo)
 
-	router := gin.Default()
-
-	v1 := router.Group("api/v1")
+	issueHandler := _issueHanlderHttp.NewIssueHttp(issueUsecase)
 	v1.GET("issues", issueHandler.GetIssues)
 	v1.POST("issues", issueHandler.CreateIssue)
 	v1.GET("issues/:id", issueHandler.GetIssue)
 	v1.PUT("issues/:id", issueHandler.UpdateIssue)
 	v1.DELETE("issues/:id", issueHandler.DeleteIssue)
+
+	userUsecase := _userUsecase.NewUserUsecase(userRepo)
+
+	userHandler := _userHanlderHttp.NewUserHttp(userUsecase)
+	v1.POST("users", userHandler.CreateUser)
 
 	v1.GET("ping", func(ctx *gin.Context) {
 		ctx.JSON(200, "success")

@@ -1,4 +1,4 @@
-package usercase
+package usecase
 
 import (
 	_issueRepository "go-issues-api/core/issue"
@@ -6,23 +6,23 @@ import (
 	_userRepository "go-issues-api/core/user"
 )
 
-type IssueUsercase struct {
+type IssueUsecase struct {
 	userRepository  _userRepository.Repository
 	IssueRepository _issueRepository.Repository
 }
 
-func NewIssueUsercase(user _userRepository.Repository, issue _issueRepository.Repository) *IssueUsercase {
-	return &IssueUsercase{
+func NewIssueUsecase(user _userRepository.Repository, issue _issueRepository.Repository) *IssueUsecase {
+	return &IssueUsecase{
 		userRepository:  user,
 		IssueRepository: issue,
 	}
 }
 
-func (this *IssueUsercase) GetAll() ([]*model.Issue, error) {
+func (this *IssueUsecase) GetAll() ([]*model.Issue, error) {
 	return this.IssueRepository.GetAll()
 }
 
-func (this *IssueUsercase) Create(userId int, title string, description string) error {
+func (this *IssueUsecase) Create(userId int, title string, description string) error {
 	var err error
 
 	user, err := this.userRepository.Get(userId)
@@ -40,12 +40,12 @@ func (this *IssueUsercase) Create(userId int, title string, description string) 
 	return err
 }
 
-func (this *IssueUsercase) FindBy(id int) (*model.Issue, error) {
+func (this *IssueUsecase) FindBy(id int) (*model.Issue, error) {
 	issue, err := this.IssueRepository.FindBy(id)
 	return issue, err
 }
 
-func (this *IssueUsercase) FindAndUpdate(id int, title, description string) (*model.Issue, error) {
+func (this *IssueUsecase) FindAndUpdate(id int, title, description string) (*model.Issue, error) {
 	var err error
 	issue, err := this.IssueRepository.FindBy(id)
 
@@ -60,7 +60,7 @@ func (this *IssueUsercase) FindAndUpdate(id int, title, description string) (*mo
 	return issue, err
 }
 
-func (this *IssueUsercase) DeleteBy(id int) (int64, error) {
+func (this *IssueUsecase) DeleteBy(id int) (int64, error) {
 	var err error
 	issue, err := this.IssueRepository.FindBy(id)
 

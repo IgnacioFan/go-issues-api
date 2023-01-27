@@ -22,3 +22,8 @@ func (this *UserRepository) Get(id int) (model.User, error) {
 
 	return user, res.Error
 }
+
+func (this *UserRepository) Create(user *model.User) error {
+	res := this.DB.Create(user)
+	return res.Error
+}
