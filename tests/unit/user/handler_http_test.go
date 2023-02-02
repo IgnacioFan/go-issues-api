@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	_handler "go-issues-api/core/user/handler"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 )
@@ -19,7 +21,7 @@ func TestCreateIssue(t *testing.T) {
 	}
 	usecase := new(mocks.Usecase)
 	usecase.On("Create", "Foo Bar").Return(res, nil)
-	handler := NewUserHttp(usecase)
+	handler := _handler.NewUserHttp(usecase)
 
 	r := gin.Default()
 	r.POST("api/v1/users", handler.CreateUser)
