@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"go-issues-api/core/user"
+	"go-issues-api/internal/user"
 
 	"github.com/gin-gonic/gin"
 )

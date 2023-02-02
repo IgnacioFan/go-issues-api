@@ -1,6 +1,6 @@
 package user
 
-import "go-issues-api/core/model"
+import "go-issues-api/internal/model"
 
 type Repository interface {
 	Get(id int) (model.User, error)

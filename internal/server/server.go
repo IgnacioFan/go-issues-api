@@ -1,12 +1,12 @@
 package server
 
 import (
-	_issueHanlderHttp "go-issues-api/core/issue/handler"
-	_issueRepository "go-issues-api/core/issue/repository"
-	_issueUsecase "go-issues-api/core/issue/usecase"
-	_userHanlderHttp "go-issues-api/core/user/handler"
-	_userRepository "go-issues-api/core/user/repository"
-	_userUsecase "go-issues-api/core/user/usecase"
+	_issueHanlderHttp "go-issues-api/internal/issue/handler"
+	_issueRepository "go-issues-api/internal/issue/repository"
+	_issueUsecase "go-issues-api/internal/issue/usecase"
+	_userHanlderHttp "go-issues-api/internal/user/handler"
+	_userRepository "go-issues-api/internal/user/repository"
+	_userUsecase "go-issues-api/internal/user/usecase"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

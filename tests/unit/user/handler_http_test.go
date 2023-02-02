@@ -1,14 +1,14 @@
 package handler
 
 import (
-	"go-issues-api/core/model"
-	"go-issues-api/core/user/mocks"
+	"go-issues-api/internal/model"
+	"go-issues-api/internal/user/mocks"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	_handler "go-issues-api/core/user/handler"
+	_handler "go-issues-api/internal/user/handler"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"

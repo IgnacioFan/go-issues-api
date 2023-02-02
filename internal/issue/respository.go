@@ -1,6 +1,6 @@
 package issue
 
-import "go-issues-api/core/model"
+import "go-issues-api/internal/model"
 
 type Repository interface {
 	GetAll() ([]*model.Issue, error)

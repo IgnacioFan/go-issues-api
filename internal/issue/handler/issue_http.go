@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"go-issues-api/core/issue"
+	"go-issues-api/internal/issue"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

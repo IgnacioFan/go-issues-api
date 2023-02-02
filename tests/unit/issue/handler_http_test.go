@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	_handler "go-issues-api/core/issue/handler"
-	"go-issues-api/core/issue/mocks"
-	"go-issues-api/core/model"
+	_handler "go-issues-api/internal/issue/handler"
+	"go-issues-api/internal/issue/mocks"
+	"go-issues-api/internal/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"

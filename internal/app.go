@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-issues-api/core/server"
 	"go-issues-api/database"
+	"go-issues-api/internal/server"
 )
 
 func main() {
