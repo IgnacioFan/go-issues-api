@@ -12,4 +12,4 @@ db.cli:
 	docker exec -it $(APP)_db_1 psql -U $(DB)
 
 test.unit:
-	docker exec -it $(APP)-web-1 go test ../tests/unit/... -v
+	docker exec -it $(APP)-web-1 go test ./tests/unit/... -v
