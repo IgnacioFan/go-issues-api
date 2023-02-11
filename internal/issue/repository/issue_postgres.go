@@ -16,9 +16,8 @@ func NewIssueRepository(db *gorm.DB) *IssueRepository {
 	}
 }
 
-func (this *IssueRepository) GetAll() ([]*model.Issue, error) {
+func (this *IssueRepository) FindAll() ([]*model.Issue, error) {
 	var issues []*model.Issue
-	// res := this.DB.Find(issues)
 	res := this.DB.Joins("Author").Find(&issues)
 
 	return issues, res.Error
@@ -26,7 +25,6 @@ func (this *IssueRepository) GetAll() ([]*model.Issue, error) {
 
 func (this *IssueRepository) Create(issue *model.Issue) error {
 	res := this.DB.Create(issue)
-
 	return res.Error
 }
 

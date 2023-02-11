@@ -36,7 +36,7 @@ func TestGetIssues(t *testing.T) {
 	}
 
 	usecase := new(mocks.Usecase)
-	usecase.On("GetAll").Return(result, nil)
+	usecase.On("FindAll").Return(result, nil)
 	handler := _handler.NewIssueHttp(usecase)
 
 	r := gin.Default()
@@ -60,7 +60,7 @@ func TestGetIssues(t *testing.T) {
 
 func TestCreateIssue(t *testing.T) {
 	usecase := new(mocks.Usecase)
-	usecase.On("Create", 1, "test", "test test test").Return(nil)
+	usecase.On("Create", 1, "test", "test test test").Return(nil, nil)
 	handler := _handler.NewIssueHttp(usecase)
 
 	r := gin.Default()

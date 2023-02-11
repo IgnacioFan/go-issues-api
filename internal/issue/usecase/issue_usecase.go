@@ -18,11 +18,11 @@ func NewIssueUsecase(user _userRepository.Repository, issue _issueRepository.Rep
 	}
 }
 
-func (this *IssueUsecase) GetAll() ([]*model.Issue, error) {
-	return this.IssueRepository.GetAll()
+func (this *IssueUsecase) FindAll() ([]*model.Issue, error) {
+	return this.IssueRepository.FindAll()
 }
 
-func (this *IssueUsecase) Create(userId int, title string, description string) error {
+func (this *IssueUsecase) Create(userId int, title string, description string) (*model.Issue, error) {
 	var err error
 
 	user, err := this.userRepository.Get(userId)
@@ -30,14 +30,14 @@ func (this *IssueUsecase) Create(userId int, title string, description string) e
 		panic(err)
 	}
 
-	var issue = &model.Issue{
+	issue := &model.Issue{
 		Title:       title,
 		Description: description,
 		Author:      user,
 	}
 	err = this.IssueRepository.Create(issue)
 
-	return err
+	return issue, err
 }
 
 func (this *IssueUsecase) FindBy(id int) (*model.Issue, error) {

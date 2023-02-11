@@ -14,17 +14,26 @@ type Usecase struct {
 }
 
 // Create provides a mock function with given fields: userId, title, description
-func (_m *Usecase) Create(userId int, title string, description string) error {
+func (_m *Usecase) Create(userId int, title string, description string) (*model.Issue, error) {
 	ret := _m.Called(userId, title, description)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int, string, string) error); ok {
+	var r0 *model.Issue
+	if rf, ok := ret.Get(0).(func(int, string, string) *model.Issue); ok {
 		r0 = rf(userId, title, description)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.Issue)
+		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int, string, string) error); ok {
+		r1 = rf(userId, title, description)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // DeleteBy provides a mock function with given fields: id
@@ -41,6 +50,29 @@ func (_m *Usecase) DeleteBy(id int) (int64, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(int) error); ok {
 		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindAll provides a mock function with given fields:
+func (_m *Usecase) FindAll() ([]*model.Issue, error) {
+	ret := _m.Called()
+
+	var r0 []*model.Issue
+	if rf, ok := ret.Get(0).(func() []*model.Issue); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.Issue)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -87,29 +119,6 @@ func (_m *Usecase) FindBy(id int) (*model.Issue, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(int) error); ok {
 		r1 = rf(id)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetAll provides a mock function with given fields:
-func (_m *Usecase) GetAll() ([]*model.Issue, error) {
-	ret := _m.Called()
-
-	var r0 []*model.Issue
-	if rf, ok := ret.Get(0).(func() []*model.Issue); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*model.Issue)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}

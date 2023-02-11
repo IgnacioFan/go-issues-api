@@ -17,7 +17,7 @@ func NewIssueHttp(usecase issue.Usecase) *IssueHttp {
 }
 
 func (this *IssueHttp) GetIssues(c *gin.Context) {
-	issues, err := this.Usecase.GetAll()
+	issues, err := this.Usecase.FindAll()
 
 	if err != nil {
 		panic(err)
@@ -33,7 +33,7 @@ func (this *IssueHttp) CreateIssue(c *gin.Context) {
 	title := c.PostForm("title")
 	description := c.PostForm("description")
 
-	err := this.Usecase.Create(userId, title, description)
+	_, err := this.Usecase.Create(userId, title, description)
 
 	if err != nil {
 		panic(err)
