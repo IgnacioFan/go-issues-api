@@ -28,26 +28,14 @@ var (
 func TestFindAll(t *testing.T) {
 	testCases := []struct {
 		name          string
-		input         interface{}
 		expected      []*model.Issue
 		expectedError error
 	}{
 		{
 			"Get all issues",
-			nil,
 			[]*model.Issue{
-				{
-					ID:          1,
-					Title:       "issue 1",
-					Description: "This is issue 1",
-					Author:      *auther,
-				},
-				{
-					ID:          2,
-					Title:       "issue 2",
-					Description: "This is issue 2",
-					Author:      *auther,
-				},
+				{ID: 1, Title: "issue 1", Description: "This is issue 1", Author: *auther},
+				{ID: 2, Title: "issue 2", Description: "This is issue 2", Author: *auther},
 			},
 			nil,
 		},
@@ -76,29 +64,20 @@ func TestCreate(t *testing.T) {
 	}{
 		{
 			"Create issue",
-			&args{
-				userId:      1,
-				title:       "Foo",
-				description: "Bar",
-			},
-			&model.Issue{
-				ID:          1,
-				Title:       "Foo",
-				Description: "Bar",
-				Author:      *auther,
-			},
+			&args{userId: 1, title: "Foo", description: "Bar"},
+			&model.Issue{ID: 1, Title: "Foo", Description: "Bar", Author: *auther},
 			nil,
 		},
 	}
 	for _, test := range testCases {
 		t.Run(test.name, func(t *testing.T) {
-			userId, title, description := test.args.userId, test.args.title, test.args.description
+			args := test.args
 
-			userMock.On("Get", userId).Return(*auther, nil)
-			issueMock.On("Create", &model.Issue{Title: title, Description: description, Author: *auther}).Return(nil)
+			userMock.On("Get", args.userId).Return(*auther, nil)
+			issueMock.On("Create", &model.Issue{Title: args.title, Description: args.description, Author: *auther}).Return(nil)
 			usecase := _usecase.NewIssueUsecase(userMock, issueMock)
 
-			res, err := usecase.Create(userId, title, description)
+			res, err := usecase.Create(args.userId, args.title, args.description)
 			if test.expectedError != nil {
 				assert.Equal(t, test.expected, res)
 				assert.Equal(t, nil, err)
