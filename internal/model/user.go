@@ -1,8 +1,8 @@
 package model
 
 type User struct {
-	ID   uint   `gorm:"column:id;primary_key" json:"id"`
-	Name string `gorm:"column:name" json:"name"`
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
 
 type UserRepository interface {
