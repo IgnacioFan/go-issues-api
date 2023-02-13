@@ -14,3 +14,11 @@ type IssueRepository interface {
 	Update(*Issue) (*Issue, error)
 	Delete(id int) (int64, error)
 }
+
+type IssueUsecase interface {
+	FindAll() ([]*Issue, error)
+	Create(userId int, title string, description string) (*Issue, error)
+	FindBy(id int) (*Issue, error)
+	FindAndUpdate(id int, title, description string) (*Issue, error)
+	DeleteBy(id int) (int64, error)
+}

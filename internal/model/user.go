@@ -9,3 +9,7 @@ type UserRepository interface {
 	Get(id int) (User, error)
 	Create(user *User) error
 }
+
+type UserUsecase interface {
+	Create(name string) (*User, error)
+}

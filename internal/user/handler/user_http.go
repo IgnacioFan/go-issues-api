@@ -1,16 +1,16 @@
 package handler
 
 import (
-	"go-issues-api/internal/user"
+	"go-issues-api/internal/model"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserHttp struct {
-	Usecase user.Usecase
+	Usecase model.UserUsecase
 }
 
-func NewUserHttp(usecase user.Usecase) *UserHttp {
+func NewUserHttp(usecase model.UserUsecase) *UserHttp {
 	return &UserHttp{
 		Usecase: usecase,
 	}

@@ -2,18 +2,18 @@ package handler
 
 import (
 	"fmt"
-	"go-issues-api/internal/issue"
+	"go-issues-api/internal/model"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type IssueHttp struct {
-	Usecase issue.Usecase
+	Usecase model.IssueUsecase
 }
 
-func NewIssueHttp(usecase issue.Usecase) *IssueHttp {
-	return &IssueHttp{Usecase: usecase}
+func NewIssueHttp(u model.IssueUsecase) *IssueHttp {
+	return &IssueHttp{Usecase: u}
 }
 
 func (this *IssueHttp) GetIssues(c *gin.Context) {
