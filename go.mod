@@ -7,6 +7,7 @@ require (
 	github.com/go-playground/assert/v2 v2.0.1
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/stretchr/testify v1.8.1
+	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0
 	gorm.io/driver/postgres v1.4.6
 	gorm.io/gorm v1.24.2
 )

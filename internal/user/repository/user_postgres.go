@@ -44,5 +44,6 @@ func (repo *UserRepository) Get(id int) (model.User, error) {
 func (repo *UserRepository) Create(user *model.User) error {
 	dbuser := toGorm(user)
 	res := repo.DB.Create(dbuser)
+
 	return res.Error
 }
