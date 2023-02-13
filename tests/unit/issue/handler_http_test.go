@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	_handler "go-issues-api/internal/issue/handler"
-	"go-issues-api/internal/issue/mocks"
 	"go-issues-api/internal/model"
+	mocks "go-issues-api/tests/mocks/issue"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"

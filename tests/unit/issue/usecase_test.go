@@ -1,10 +1,10 @@
 package issue
 
 import (
-	_issueRepo "go-issues-api/internal/issue/mocks"
 	_usecase "go-issues-api/internal/issue/usecase"
 	"go-issues-api/internal/model"
-	_userRepo "go-issues-api/internal/user/mocks"
+	_issueRepo "go-issues-api/tests/mocks/issue"
+	_userRepo "go-issues-api/tests/mocks/user"
 	"testing"
 
 	"github.com/go-playground/assert/v2"

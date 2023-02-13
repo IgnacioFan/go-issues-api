@@ -2,7 +2,7 @@ package handler
 
 import (
 	"go-issues-api/internal/model"
-	"go-issues-api/internal/user/mocks"
+	mocks "go-issues-api/tests/mocks/user"
 	"net/http"
 	"net/http/httptest"
 	"strings"
