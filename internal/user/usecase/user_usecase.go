@@ -2,14 +2,13 @@ package usercase
 
 import (
 	"go-issues-api/internal/model"
-	_userRepository "go-issues-api/internal/user"
 )
 
 type UserUsecase struct {
-	UserRepository _userRepository.Repository
+	UserRepository model.UserRepository
 }
 
-func NewUserUsecase(userRepo _userRepository.Repository) *UserUsecase {
+func NewUserUsecase(userRepo model.UserRepository) *UserUsecase {
 	return &UserUsecase{
 		UserRepository: userRepo,
 	}
