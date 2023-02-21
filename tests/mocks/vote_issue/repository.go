@@ -13,8 +13,8 @@ type VoteIssueRepository struct {
 	mock.Mock
 }
 
-// FindOrCreate provides a mock function with given fields: vi
-func (_m *VoteIssueRepository) FindOrCreate(vi *model.VoteIssue) (*model.VoteIssue, error) {
+// Create provides a mock function with given fields: vi
+func (_m *VoteIssueRepository) Create(vi *model.VoteIssue) (*model.VoteIssue, error) {
 	ret := _m.Called(vi)
 
 	var r0 *model.VoteIssue

@@ -81,7 +81,7 @@ func (u *IssueUsecase) Vote(issueId, userId, vote int) (*model.VoteIssue, error)
 	}
 	voteIssue, err := u.VoteIssueRepository.Update(vi)
 	if err != nil {
-		voteIssue, err = u.VoteIssueRepository.FindOrCreate(vi)
+		voteIssue, err = u.VoteIssueRepository.Create(vi)
 	}
 	return voteIssue, err
 }

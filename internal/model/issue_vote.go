@@ -12,6 +12,6 @@ type VoteIssue struct {
 }
 
 type VoteIssueRepository interface {
-	FindOrCreate(vi *VoteIssue) (*VoteIssue, error)
+	Create(vi *VoteIssue) (*VoteIssue, error)
 	Update(vi *VoteIssue) (*VoteIssue, error)
 }

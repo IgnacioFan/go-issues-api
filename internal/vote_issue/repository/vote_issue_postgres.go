@@ -45,16 +45,10 @@ func NewVoteIssueRepository(conn *gorm.DB) *VoteIssueRepository {
 	}
 }
 
-func (repo *VoteIssueRepository) FindOrCreate(vi *model.VoteIssue) (*model.VoteIssue, error) {
+func (repo *VoteIssueRepository) Create(vi *model.VoteIssue) (*model.VoteIssue, error) {
 	var dbVoteIssue = toGorm(vi)
-	res := repo.DB.Where(&VoteIssue{IssueId: vi.IssueId, UserId: vi.UserId}).First(&dbVoteIssue)
-
-	if res.Error == nil {
-		return dbVoteIssue.toModel(), nil
-	} else {
-		res = repo.DB.Create(dbVoteIssue)
-		return dbVoteIssue.toModel(), res.Error
-	}
+	res := repo.DB.Create(dbVoteIssue)
+	return dbVoteIssue.toModel(), res.Error
 }
 
 func (repo *VoteIssueRepository) Update(vi *model.VoteIssue) (*model.VoteIssue, error) {

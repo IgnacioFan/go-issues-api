@@ -30,28 +30,16 @@ func (a AnyTime) Match(v driver.Value) bool {
 	return ok
 }
 
-func TestFindOrCreate(t *testing.T) {
+func TestCreate(t *testing.T) {
 	tests := []struct {
 		name   string
 		input  *model.VoteIssue
 		runSQL func(mock sqlmock.Sqlmock)
 	}{
 		{
-			name:  "found record successfully",
+			name:  "Create success",
 			input: &model.VoteIssue{IssueId: issueId, UserId: userId, Vote: upvote},
 			runSQL: func(mock sqlmock.Sqlmock) {
-				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "vote_issues" WHERE`)).
-					WithArgs(issueId, userId).
-					WillReturnRows(sqlmock.NewRows([]string{"id", "issue_id", "user_id"}).
-						AddRow(voteIssueId, issueId, userId))
-			},
-		},
-		{
-			name:  "created record due to record not found",
-			input: &model.VoteIssue{IssueId: issueId, UserId: userId, Vote: upvote},
-			runSQL: func(mock sqlmock.Sqlmock) {
-				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "vote_issues"`)).
-					WillReturnRows(sqlmock.NewRows(nil))
 				mock.ExpectBegin()
 				mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "vote_issues"`)).
 					WillReturnRows(sqlmock.NewRows([]string{"id", "issue_id", "user_id", "vote"}).
@@ -66,7 +54,7 @@ func TestFindOrCreate(t *testing.T) {
 			test.runSQL(*mock)
 
 			repo := _repo.NewVoteIssueRepository(orm)
-			vote_issue, err := repo.FindOrCreate(test.input)
+			vote_issue, err := repo.Create(test.input)
 
 			if err != nil {
 				assert.Equal(t, errors.New("record not found"), err)
@@ -87,7 +75,7 @@ func TestUpdate(t *testing.T) {
 		runSQL func(mock sqlmock.Sqlmock)
 	}{
 		{
-			name:  "upvote to downvote",
+			name:  "from upvote to downvote",
 			input: &model.VoteIssue{IssueId: issueId, UserId: userId, Vote: downvote},
 			runSQL: func(mock sqlmock.Sqlmock) {
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "vote_issues"`)).
@@ -101,7 +89,7 @@ func TestUpdate(t *testing.T) {
 			},
 		},
 		{
-			name:  "upvote to upvote",
+			name:  "from upvote to upvote",
 			input: &model.VoteIssue{IssueId: issueId, UserId: userId, Vote: upvote},
 			runSQL: func(mock sqlmock.Sqlmock) {
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "vote_issues" WHERE`)).

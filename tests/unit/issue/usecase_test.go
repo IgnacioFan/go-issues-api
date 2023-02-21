@@ -109,7 +109,7 @@ func TestVote(t *testing.T) {
 					UserId:  1,
 					Vote:    1,
 				}).Return(nil, errors.New("record not found"))
-				repo.On("FindOrCreate", &model.VoteIssue{
+				repo.On("Create", &model.VoteIssue{
 					IssueId: 1,
 					UserId:  1,
 					Vote:    1,
