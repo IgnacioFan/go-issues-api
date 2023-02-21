@@ -21,4 +21,5 @@ type IssueUsecase interface {
 	FindBy(id int) (*Issue, error)
 	FindAndUpdate(id int, title, description string) (*Issue, error)
 	DeleteBy(id int) (int64, error)
+	Vote(id, userId, vote int) (*VoteIssue, error)
 }

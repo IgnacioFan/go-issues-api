@@ -5,14 +5,16 @@ import (
 )
 
 type IssueUsecase struct {
-	userRepository  model.UserRepository
-	IssueRepository model.IssueRepository
+	userRepository      model.UserRepository
+	IssueRepository     model.IssueRepository
+	VoteIssueRepository model.VoteIssueRepository
 }
 
-func NewIssueUsecase(user model.UserRepository, issue model.IssueRepository) *IssueUsecase {
+func NewIssueUsecase(user model.UserRepository, issue model.IssueRepository, vote_issue model.VoteIssueRepository) *IssueUsecase {
 	return &IssueUsecase{
-		userRepository:  user,
-		IssueRepository: issue,
+		userRepository:      user,
+		IssueRepository:     issue,
+		VoteIssueRepository: vote_issue,
 	}
 }
 
@@ -69,4 +71,17 @@ func (this *IssueUsecase) DeleteBy(id int) (int64, error) {
 	affected, err := this.IssueRepository.Delete(int(issue.ID))
 
 	return affected, err
+}
+
+func (u *IssueUsecase) Vote(issueId, userId, vote int) (*model.VoteIssue, error) {
+	vi := &model.VoteIssue{
+		IssueId: uint(issueId),
+		UserId:  uint(userId),
+		Vote:    vote,
+	}
+	voteIssue, err := u.VoteIssueRepository.Update(vi)
+	if err != nil {
+		voteIssue, err = u.VoteIssueRepository.FindOrCreate(vi)
+	}
+	return voteIssue, err
 }
