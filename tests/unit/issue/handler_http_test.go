@@ -1,7 +1,10 @@
 package issue
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -13,6 +16,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
+)
+
+var (
+	router           = gin.Default()
+	issueUsecaseMock = new(mocks.IssueUsecase)
 )
 
 func TestGetIssues(t *testing.T) {
@@ -35,7 +43,7 @@ func TestGetIssues(t *testing.T) {
 		},
 	}
 
-	usecase := new(mocks.Usecase)
+	usecase := new(mocks.IssueUsecase)
 	usecase.On("FindAll").Return(result, nil)
 	handler := _handler.NewIssueHttp(usecase)
 
@@ -59,7 +67,7 @@ func TestGetIssues(t *testing.T) {
 }
 
 func TestCreateIssue(t *testing.T) {
-	usecase := new(mocks.Usecase)
+	usecase := new(mocks.IssueUsecase)
 	usecase.On("Create", 1, "test", "test test test").Return(nil, nil)
 	handler := _handler.NewIssueHttp(usecase)
 
@@ -96,7 +104,7 @@ func TestGetIssue(t *testing.T) {
 		Author:      *auther,
 	}
 
-	usecase := new(mocks.Usecase)
+	usecase := new(mocks.IssueUsecase)
 	usecase.On("FindBy", 1).Return(result, nil)
 	handler := _handler.NewIssueHttp(usecase)
 
@@ -144,7 +152,7 @@ func TestUpdateIssue(t *testing.T) {
 		Author:      *auther,
 	}
 
-	usecase := new(mocks.Usecase)
+	usecase := new(mocks.IssueUsecase)
 	usecase.On("FindAndUpdate", 1, "updated title", "updated text").Return(result, nil)
 	handler := _handler.NewIssueHttp(usecase)
 
@@ -186,7 +194,7 @@ func TestUpdateIssue(t *testing.T) {
 
 func TestDeleteIssue(t *testing.T) {
 	var affected int64 = 1
-	usecase := new(mocks.Usecase)
+	usecase := new(mocks.IssueUsecase)
 	usecase.On("DeleteBy", 1).Return(affected, nil)
 	handler := _handler.NewIssueHttp(usecase)
 
@@ -223,4 +231,69 @@ func TestDeleteIssue(t *testing.T) {
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, "{\"data\":\"record not found\"}", w.Body.String())
+}
+
+func TestVoteIssue(t *testing.T) {
+	upvoteIssue := &model.VoteIssue{ID: 1, IssueId: 1, UserId: 1, Vote: 1}
+	downvoteIssue := &model.VoteIssue{ID: 1, IssueId: 1, UserId: 1, Vote: -1}
+	tests := []struct {
+		name        string
+		usecase     func(u *mocks.IssueUsecase)
+		args        [2]int
+		expected    *model.VoteIssue
+		expectedErr error
+	}{
+		{
+			"when user upvote",
+			func(usecase *mocks.IssueUsecase) {
+				usecase.On("Vote", 1, 1, 1).Return(upvoteIssue, nil)
+			},
+			[2]int{1, 1},
+			upvoteIssue,
+			nil,
+		},
+		{
+			"when user downvote",
+			func(usecase *mocks.IssueUsecase) {
+				usecase.On("Vote", 1, 1, -1).Return(downvoteIssue, nil)
+			},
+			[2]int{1, -1},
+			downvoteIssue,
+			nil,
+		},
+	}
+
+	handler := _handler.NewIssueHttp(issueUsecaseMock)
+	router.POST("api/v1/issues/:id/vote", handler.VoteIssue)
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			test.usecase(issueUsecaseMock)
+
+			// set request body
+			req := fmt.Sprintf("user_id=%v&vote=%v", test.args[0], test.args[1])
+
+			// get response
+			w := performRequest(router, http.MethodPost, "/api/v1/issues/1/vote", strings.NewReader(req))
+			assert.Equal(t, http.StatusOK, w.Code)
+
+			// verify response status
+			var response map[string]model.VoteIssue
+			err := json.Unmarshal([]byte(w.Body.String()), &response)
+			assert.Equal(t, test.expectedErr, err)
+
+			// verify response body
+			values, ok := response["data"]
+			assert.Equal(t, true, ok)
+			assert.Equal(t, test.expected, values)
+		})
+	}
+}
+
+func performRequest(r http.Handler, method, path string, body io.Reader) *httptest.ResponseRecorder {
+	req, _ := http.NewRequest(method, path, body)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return w
 }

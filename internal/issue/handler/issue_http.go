@@ -91,3 +91,21 @@ func (this *IssueHttp) DeleteIssue(c *gin.Context) {
 		})
 	}
 }
+
+func (this *IssueHttp) VoteIssue(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	userId, _ := strconv.Atoi(c.PostForm("user_id"))
+	vote, _ := strconv.Atoi(c.PostForm("vote"))
+
+	voteIssue, err := this.Usecase.Vote(id, userId, vote)
+
+	if err == nil {
+		c.JSON(200, gin.H{
+			"data": voteIssue,
+		})
+	} else {
+		c.JSON(404, gin.H{
+			"data": err.Error(),
+		})
+	}
+}
